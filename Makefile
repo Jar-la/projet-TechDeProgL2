@@ -1,0 +1,1 @@
+gcc -std=c89 -pendatic - Wall -Werror -g `pkg-config
