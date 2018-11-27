@@ -1,3 +1,5 @@
+include "movie.h"
+
 movie_t *movie_create()
 {
  	movie_t nouv;
@@ -8,4 +10,9 @@ movie_t *movie_create()
 void movie_free(movie_t *movie)
 {
 	free(movie);
+}
+
+void movie_handle_mv(movie_t movie)
+{
+	fprintf(stdout, "%s (%d), %f EUR\n", movie.name, movie.year, movie.price);
 }
