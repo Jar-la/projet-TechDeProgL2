@@ -1,8 +1,10 @@
-include "movie.h"
+#include "movie.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 movie_t *movie_create()
 {
- 	movie_t nouv;
+ 	movie_t * nouv;
  	nouv = malloc(sizeof(movie_t));
  	return(nouv);
  }
