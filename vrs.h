@@ -15,7 +15,7 @@ typedef struct{
     int nmovies; /**< The VRS number of movies. */
     int postal_code; /**< The VRS postal code. */
     char *street; /**< the VRS street.*/
-} vrs_t
+} vrs_t;
 
 
 /**
