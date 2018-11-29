@@ -59,7 +59,7 @@ void movie_handle_mvpge (movie_t movie, float price);
 	* \param movie The movie.
 	* \param price The movie renting price.
 	*/
-void movie_handle_mvpgt(movie_t, float price);
+void movie_handle_mvpgt(movie_t movie, float price);
 
 /**
 	* Handles the mvple command for a movie.
