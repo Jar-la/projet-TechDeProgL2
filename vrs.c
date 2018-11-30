@@ -4,8 +4,9 @@
 
 
 int vrs_add_movie(vrs_t *vrs, movie_t *movie){
-    vrs->movies = realloc(movie, (vrs->nmovies+1)*sizeof(movie_t));
+    vrs->movies = realloc(vrs->movies, (vrs->nmovies+1)*sizeof(movie_t));
     if (vrs->movies == NULL) return -1;
+    vrs->movies[vrs->nmovies]=movie;
     vrs->nmovies++;
     return 0;
 }
