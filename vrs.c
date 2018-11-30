@@ -1,4 +1,4 @@
-#include "vrs.h" 
+#include "vrs.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -46,60 +46,60 @@ void vrs_handle_mvpge(vrs_t vrs, float price){
     int i;
     for (i=0; i<vrs.nmovies;i++){
          movie_handle_mvpge (*vrs.movies[i],price);
-    } 
+    }
 }
 
 void vrs_handlem_mvpgt(vrs_t vrs, float price){
     int i;
     for (i=0; i<vrs.nmovies;i++){
         movie_handle_mvpgt(*vrs.movies[i], price);
-    } 
+    }
 }
 
 void vrs_handle_mvple(vrs_t vrs, float price){
     int i;
     for (i=0; i<vrs.nmovies;i++){
         movie_handle_mvple(*vrs.movies[i],price);
-    }     
+    }
 }
 
 void vrs_handle_mvplt(vrs_t vrs, float price){
      int i;
     for (i=0; i<vrs.nmovies;i++){
         movie_handle_mvplt( *vrs.movies[i], price);
-    }        
+    }
 }
 
 void vrs_handle_mvy(vrs_t vrs, int year){
     int i;
     for (i=0; i<vrs.nmovies;i++){
         movie_handle_mvy( *vrs.movies[i], year);
-    }   
+    }
 }
 
 void vrs_handle_mvyge(vrs_t vrs, int year){
     int i;
     for (i=0; i<vrs.nmovies;i++){
         movie_handle_mvyge( *vrs.movies[i] , year);
-    }    
+    }
 }
 void vrs_handle_mvygt(vrs_t vrs, int year){
     int i;
     for (i=0; i<vrs.nmovies;i++){
         movie_handle_mvygt( *vrs.movies[i] , year);
-    }    
+    }
 }
 
 void vrs_handle_mvyle(vrs_t vrs, int year){
     int i;
     for (i=0; i<vrs.nmovies;i++){
         movie_handle_mvyle( *vrs.movies[i] , year);
-    }    
+    }
 }
 
 void vrs_handle_mvylt(vrs_t vrs, int year){
     int i;
     for (i=0; i<vrs.nmovies;i++){
         movie_handle_mvylt( *vrs.movies[i] , year);
-    }      
+    }
 }
