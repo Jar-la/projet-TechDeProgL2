@@ -8,6 +8,7 @@ int main(int argc, char const *argv[])
 	xmlNodePtr noeud;
 	vrs_t *vrs1;
 	movie_t * movie;
+	int err;
 
 	document = NULL;
 	/*Charge le document*/
@@ -70,7 +71,11 @@ int main(int argc, char const *argv[])
 			movie->name = (char *) xmlGetProp(noeud, (const xmlChar *) "name");
 			movie->year = strtol((char *) xmlNodeListGetString(document, noeud->xmlChildrenNode->next->xmlChildrenNode,1),NULL,10);
 			movie->price = strtod((char *) xmlNodeListGetString(document, noeud->xmlChildrenNode->next->next->next->xmlChildrenNode,1),NULL);
-			vrs_add_movie(vrs1, movie);
+			err=vrs_add_movie(vrs1, movie);
+			if (err=-1){
+				fprintf(stderr, "memory allocation is a failure\n");
+				return(1);
+			}
 
 		}
 		noeud = noeud->next->next;
