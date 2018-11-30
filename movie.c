@@ -7,10 +7,6 @@ movie_t *movie_create()
 {
  	movie_t * nouv = NULL;
  	nouv = malloc(sizeof(movie_t));
- 	if (nouv == NULL)
- 	{
- 		fprintf(stderr, "L'allocation à échouée.\n");
- 	}
  	return(nouv);
  }
 
