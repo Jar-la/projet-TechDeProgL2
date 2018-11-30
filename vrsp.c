@@ -35,14 +35,26 @@ int main(int argc, char const *argv[])
 	vrs1->name = (char *) xmlGetProp(noeud, (const xmlChar *) "name");
 
 	noeud = noeud->xmlChildrenNode;
+	noeud = noeud->next;
 
 	/* Initialisation de la rue du vidéo-club à partir du fichier xml */
-	vrs1->street = (char *) xmlNodeListGetString(document, noeud, 1);
+	vrs1->street =  (char *) xmlNodeListGetString(document, noeud->xmlChildrenNode, 1);
 
-	noeud = noeud->next;
-	/*
-	vrs1->postal_code =  xmlNodeListGetString(document, noeud, 1);
-	*En construction
- */
+	/* Passage de <street> à <postal_code> (/!\Les retours à la ligne sont des noeuds) */
+	noeud=noeud->next->next;
+
+	/* Initialisation du code postal du vidéo-club à partir du fichier xml */
+	vrs1->postal_code =  strtol((char *) xmlNodeListGetString(document, noeud->xmlChildrenNode, 1), NULL, 10);
+
+	noeud=noeud->next->next;
+
+	/* Initialisation de la ville du vidéo-club à partir du fichier xml */
+	vrs1->city =  (char *) xmlNodeListGetString(document, noeud->xmlChildrenNode, 1);
+
+	printf("%s\n", vrs1->name);
+	printf("%s\n", vrs1->street);
+	printf("%d\n", vrs1->postal_code);
+	printf("%s\n", vrs1->city);
+
 	return 0;
 }
