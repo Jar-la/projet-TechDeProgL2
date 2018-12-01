@@ -11,13 +11,18 @@ int main(int argc, char const *argv[])
 	vrs_t *vrs1;
 	movie_t * movie;
 	int err;
+	if(argc!=2){
+		fprintf(stderr,"./vrsp.out: Invalid number of arguments\n");
+		return 1;
+	}
+	
 
 	document = NULL;
 	/*Charge le document*/
-	document = xmlParseFile("./vrs.xml");
+	document = xmlParseFile(argv[1]);
 	if (document==NULL)
 	{
-		fprintf(stderr, "Erreur lors de l'ouverture du fichier\n");
+		fprintf(stderr, "./vrsp.out: Unable to parse the document\n");
 		xmlCleanupParser(); /*Libère la mémoire allouée pour la bibliotheque elle-même */
 		return(1);
 	}
@@ -82,8 +87,7 @@ int main(int argc, char const *argv[])
 		}
 		noeud = noeud->next->next;
 	}
-	err= menu(*vrs1);
-	if(err!=0){return 1;}
+	if(menu(*vrs1)!=0){return 1;}
 /**
 	*Section TESTS
 
@@ -107,12 +111,13 @@ int menu(vrs_t vrs){
 	char val[30];
 	char *ptr;
 	do{
+		/** (Ré)Initialisation des variables **/
 		i=0;
 		j=0;
 		price=0.0;
 		year=0;
 
-		/** Vider les cahines de char **/
+		/** (Ré)Initialisation des strings **/
 		for(i=0;i<=30;i++){
 			s[i] = '\0';
 			op[i] = '\0';
@@ -151,17 +156,25 @@ int menu(vrs_t vrs){
 				i++;
 				j++;
 			}
+			/** Price et year respectivement float et int créés a partir de val**/
 			price = strtod(val , &ptr);
   			year = strtod(val , &ptr);
 			
 		}
+
+		/** Si  la commande dépasse 18 char erreur et retour a la saisie sinon on continue **/
 		if(i>18){
 			fprintf(stdout,"./vrsp.out: Too many characters for the command\n");
+
 		}else{
-			if(NULL==strstr("addr help mv mvn mvp mvpge mvpgt mvple mvplt mvy mvyge mvygt mvyle mvylt version quit",op)){
+			/** L'opérateur est-il dans la liste des oprérations authorisées **/
+			if((NULL==strstr("addr help mv mvn mvp mvpge mvpgt mvple mvplt mvy mvyge mvygt mvyle mvylt version quit",op)) || (strcmp(op,"")==0) ){
 				fprintf(stdout, "./vrsp.out: Invalid command \n");
+
+
 			}else if(0==strcmp(op,"addr")){
 				vrs_handle_addr(vrs);
+
 			}else if(0==strcmp(op,"help\0")){
 				fprintf(stdout,"addr: Prints the VRS address\n");
 				fprintf(stdout,"help: Prints this help mv: Prints the VRS movies\n");
@@ -178,40 +191,63 @@ int menu(vrs_t vrs){
 				fprintf(stdout,"mvylt YEAR: Prints the VRS movies with the release year less than YEAR\n");
 				fprintf(stdout,"version: Prints the VRSP version\n");
 				fprintf(stdout, "quit: Quits VRSP\n");
+
 			}else if(0==strcmp(op,"mv\0")){
 				vrs_handle_mv(vrs);
+
 			}else if(0==strcmp(op,"version\0")){
-				fprintf(stdout,"VRSP (Video Rental Shop Program) 2018/12/01 \n");
+				fprintf(stdout,"VRSP (Video Rental Shop Program) 20181201 \n\n");
+				fprintf(stdout,"Copyright (C) 2018 Edwin Vanootegem and Alexandre Lafon.\n\n");
+				fprintf(stdout,"Written by Edwin Vanootegem <edwin.vanootegem@etud.univ-pau.fr> and Alexandre Lafon <alexandre.lafon@etud.univ-pau.fr>.\n");
+
 			}else if(0==strcmp(op,"quit\0")){
-				/**On fait rien**/
+				/** On ne fait rien **/
+
+			/**  Les commande suivantes on besion d'un paramettre alors on regarde si j a fait un parcourt  **/
 			}else if(j==0){
 				fprintf(stdout,"./vrsp.out: Missing parameter for the %s command\n",op);
+				
+
 			}else if(0==strcmp(op,"mvn\0")){
 				vrs_handle_mvn(vrs, val);
+
+
+			/** ptr est une chaine contenant val privé de son nombre, 
+			si ptr est val sont identiques alors val ne contenait pas de nombre **/
 			}else if(0==strcmp(val,ptr)){
 				fprintf(stdout,"./vrsp.out: Invalid parameter for the %s command\n",op);
+
 			}else if(0==strcmp(op,"mvp\0")){
 				vrs_handle_mvp(vrs,price);
+
 			}else if (0==strcmp(op,"mvpge\0")){
 				vrs_handle_mvpge(vrs,price);
+
 			}else if (0==strcmp(op,"mvpgt\0")){
 				vrs_handlem_mvpgt(vrs,price);
+
 			}else if (0==strcmp(op,"mvple\0")){
 				vrs_handle_mvple(vrs,price);
+
 			}else if (0==strcmp(op,"mvplt\0")){
 				vrs_handle_mvplt(vrs,price);
+
 			}else if (0==strcmp(op,"mvy\0")){
 				vrs_handle_mvy(vrs,year);
+
 			}else if (0==strcmp(op,"mvyge\0")){
 				vrs_handle_mvyge(vrs,year);
+
 			}else if (0==strcmp(op,"mvygt\0")){
 				vrs_handle_mvygt(vrs,year);
+
 			}else if (0==strcmp(op,"mvyle\0")){
 				vrs_handle_mvyle(vrs,year);
+
 			}else if (0==strcmp(op,"mvylt\0")){
 				vrs_handle_mvylt(vrs,year);
 			}
-			}
-		}while(!(0==strcmp(op,"quit\0")));
-		return 0;
+		}
+	}while(!(0==strcmp(op,"quit\0")));
+	return 0;
 }
