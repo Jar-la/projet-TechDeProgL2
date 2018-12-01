@@ -100,12 +100,18 @@ int main(int argc, char const *argv[])
 int menu(vrs_t vrs){
 	int i;
 	int j;
+	double price;
+    int year;
 	char s[30];
 	char op[30];
 	char val[30];
+	char *ptr;
 	do{
 		i=0;
 		j=0;
+		price=0.0;
+		year=0;
+
 		/** Vider les cahines de char **/
 		for(i=0;i<=30;i++){
 			s[i] = '\0';
@@ -145,12 +151,16 @@ int menu(vrs_t vrs){
 				i++;
 				j++;
 			}
+			price = strtod(val , &ptr);
+  			year = strtod(val , &ptr);
 			
 		}
 		if(i>18){
-			fprintf(stdout,"Too many char for the command\n");
+			fprintf(stdout,"./vrsp.out: Too many characters for the command\n");
 		}else{
-			if(0==strcmp(op,"addr")){
+			if(NULL==strstr("addr help mv mvn mvp mvpge mvpgt mvple mvplt mvy mvyge mvygt mvyle mvylt version quit",op)){
+				fprintf(stdout, "./vrsp.out: Invalid command \n");
+			}else if(0==strcmp(op,"addr")){
 				vrs_handle_addr(vrs);
 			}else if(0==strcmp(op,"help\0")){
 				fprintf(stdout,"addr: Prints the VRS address\n");
@@ -175,33 +185,31 @@ int menu(vrs_t vrs){
 			}else if(0==strcmp(op,"quit\0")){
 				/**On fait rien**/
 			}else if(j==0){
-				fprintf(stdout,"Missing parameter for the %s command\n",op);
+				fprintf(stdout,"./vrsp.out: Missing parameter for the %s command\n",op);
 			}else if(0==strcmp(op,"mvn\0")){
-				fprintf(stdout,"op=%s\n",op);
-				fprintf(stdout,"val=%s\n",val);
 				vrs_handle_mvn(vrs, val);
+			}else if(0==strcmp(val,ptr)){
+				fprintf(stdout,"./vrsp.out: Invalid parameter for the %s command\n",op);
 			}else if(0==strcmp(op,"mvp\0")){
-					
-			}else if (0==strcmp(op,"mvpg\0")){
-				
+				vrs_handle_mvp(vrs,price);
+			}else if (0==strcmp(op,"mvpge\0")){
+				vrs_handle_mvpge(vrs,price);
 			}else if (0==strcmp(op,"mvpgt\0")){
-				
+				vrs_handlem_mvpgt(vrs,price);
 			}else if (0==strcmp(op,"mvple\0")){
-				
+				vrs_handle_mvple(vrs,price);
 			}else if (0==strcmp(op,"mvplt\0")){
-				
+				vrs_handle_mvplt(vrs,price);
 			}else if (0==strcmp(op,"mvy\0")){
-			
+				vrs_handle_mvy(vrs,year);
 			}else if (0==strcmp(op,"mvyge\0")){
-		
+				vrs_handle_mvyge(vrs,year);
 			}else if (0==strcmp(op,"mvygt\0")){
-			
+				vrs_handle_mvygt(vrs,year);
 			}else if (0==strcmp(op,"mvyle\0")){
-		
+				vrs_handle_mvyle(vrs,year);
 			}else if (0==strcmp(op,"mvylt\0")){
-
-			}else{
-				fprintf(stdout, "./vrsp.out: Invalid command \n");
+				vrs_handle_mvylt(vrs,year);
 			}
 			}
 		}while(!(0==strcmp(op,"quit\0")));
