@@ -20,7 +20,7 @@ void vrs_free(vrs_t *vrs){
 }
 
 void vrs_handle_addr(vrs_t vrs){
-    fprintf(stdout,"%s, %s ,%d , %s \n" ,vrs.name,vrs.street,vrs.postal_code,vrs.city);
+    fprintf(stdout,"%s, %s, %d, %s \n" ,vrs.name,vrs.street,vrs.postal_code,vrs.city);
 }
 
 void vrs_handle_mv(vrs_t vrs){
