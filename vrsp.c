@@ -164,12 +164,12 @@ int menu(vrs_t vrs){
 
 		/** Si  la commande dépasse 18 char erreur et retour a la saisie sinon on continue **/
 		if(i>18){
-			fprintf(stdout,"./vrsp.out: Too many characters for the command\n");
+			fprintf(stderr,"./vrsp.out: Too many characters for the command\n");
 
 		}else{
 			/** L'opérateur est-il dans la liste des oprérations authorisées **/
 			if((NULL==strstr("addr help mv mvn mvp mvpge mvpgt mvple mvplt mvy mvyge mvygt mvyle mvylt version quit",op)) || (strcmp(op,"")==0) ){
-				fprintf(stdout, "./vrsp.out: Invalid command \n");
+				fprintf(stderr, "./vrsp.out: Invalid command \n");
 
 
 			}else if(0==strcmp(op,"addr")){
@@ -205,7 +205,7 @@ int menu(vrs_t vrs){
 
 			/**  Les commande suivantes on besion d'un paramettre alors on regarde si j a fait un parcourt  **/
 			}else if(j==0){
-				fprintf(stdout,"./vrsp.out: Missing parameter for the %s command\n",op);
+				fprintf(stderr,"./vrsp.out: Missing parameter for the %s command\n",op);
 				
 
 			}else if(0==strcmp(op,"mvn\0")){
@@ -215,7 +215,7 @@ int menu(vrs_t vrs){
 			/** ptr est une chaine contenant val privé de son nombre, 
 			si ptr est val sont identiques alors val ne contenait pas de nombre **/
 			}else if(0==strcmp(val,ptr)){
-				fprintf(stdout,"./vrsp.out: Invalid parameter for the %s command\n",op);
+				fprintf(stderr,"./vrsp.out: Invalid parameter for the %s command\n",op);
 
 			}else if(0==strcmp(op,"mvp\0")){
 				vrs_handle_mvp(vrs,price);
