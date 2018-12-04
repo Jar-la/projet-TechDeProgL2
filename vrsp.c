@@ -10,12 +10,12 @@ int main(int argc, char const *argv[])
 	xmlNodePtr noeud;
 	vrs_t *vrs1;
 	movie_t * movie;
-	int err;
+	int err,i;
 	if(argc!=2){
 		fprintf(stderr,"./vrsp.out: Invalid number of arguments\n");
 		return 1;
 	}
-	
+
 
 	document = NULL;
 	/*Charge le document*/
@@ -88,15 +88,11 @@ int main(int argc, char const *argv[])
 		noeud = noeud->next->next;
 	}
 	if(menu(*vrs1)!=0){return 1;}
-/**
-	*Section TESTS
-
-	vrs_handle_addr(*vrs1);
-	vrs_handle_mv(*vrs1);
-	vrs_handle_mvp(*vrs1, 1.99);
-	vrs_handle_mvn(*vrs1, "Lord");
-
-**/
+	for (i = 0; i < vrs1->nmovies; ++i)
+	{
+		movie_free(vrs1->movies[i]);
+	}
+	vrs_free(vrs1);
 	return 0;
 }
 
@@ -127,7 +123,7 @@ int menu(vrs_t vrs){
 		fprintf(stdout,"VRSP> ");
 
 		/**On récupére s et on verifie de bien l'avoir reçu**/
-		if( fgets(s,29, stdin) == NULL){ 
+		if( fgets(s,29, stdin) == NULL){
 			fprintf(stderr,"Error: Failed to get user's imput");
 			return 1;
 		}
@@ -136,7 +132,7 @@ int menu(vrs_t vrs){
 		if(strstr(s," ")==NULL){
 			/** Pas de paramettres alors on copie s dans op **/
 			i=0;
-			while( s[i] != '\n' ){  
+			while( s[i] != '\n' ){
 				op[i]=s[i];
 				i++;
 			}
@@ -145,13 +141,13 @@ int menu(vrs_t vrs){
 			/**Tout les char jusqu'au premier espace sont l'operation**/
 			i=0;
 			j=0;
-			while( s[i] != ' ' ){  
+			while( s[i] != ' ' ){
 				op[i]=s[i];
 				i++;
 			}
 			i++;
 			/** Le reste est le parametre **/
-			while( s[i] != '\n' ){  
+			while( s[i] != '\n' ){
 				val[j]=s[i];
 				i++;
 				j++;
@@ -159,7 +155,7 @@ int menu(vrs_t vrs){
 			/** Price et year respectivement float et int créés a partir de val**/
 			price = strtod(val , &ptr);
   			year = strtod(val , &ptr);
-			
+
 		}
 
 		/** Si  la commande dépasse 18 char erreur et retour a la saisie sinon on continue **/
@@ -183,7 +179,7 @@ int menu(vrs_t vrs){
 				fprintf(stdout,"mvpge PRICE: Prints the VRS movies with the renting price greater than or equal to PRICE\n");
 				fprintf(stdout,"mvpgt PRICE: Prints the VRS movies with the renting price greater than PRICE\n");
 				fprintf(stdout,"mvple PRICE: Prints the VRS movies with the renting price less than or equal to PRICE\n");
-				fprintf(stdout,"mvplt PRICE: Prints the VRS movies with the renting price less than PRICE\n");	
+				fprintf(stdout,"mvplt PRICE: Prints the VRS movies with the renting price less than PRICE\n");
 				fprintf(stdout,"mvy YEAR: Prints the VRS movies with the release year equal to YEAR\n");
 				fprintf(stdout,"mvyge YEAR: Prints the VRS movies with the release year greater than or equal to YEAR\n");
 				fprintf(stdout,"mvygt YEAR: Prints the VRS movies with the release year greater than YEAR\n");
@@ -206,13 +202,13 @@ int menu(vrs_t vrs){
 			/**  Les commande suivantes on besion d'un paramettre alors on regarde si j a fait un parcourt  **/
 			}else if(j==0){
 				fprintf(stderr,"./vrsp.out: Missing parameter for the %s command\n",op);
-				
+
 
 			}else if(0==strcmp(op,"mvn\0")){
 				vrs_handle_mvn(vrs, val);
 
 
-			/** ptr est une chaine contenant val privé de son nombre, 
+			/** ptr est une chaine contenant val privé de son nombre,
 			si ptr est val sont identiques alors val ne contenait pas de nombre **/
 			}else if(0==strcmp(val,ptr)){
 				fprintf(stderr,"./vrsp.out: Invalid parameter for the %s command\n",op);
