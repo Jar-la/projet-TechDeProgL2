@@ -1,4 +1,5 @@
 #include "vrs.h"
+#include <libxml/tree.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -16,6 +17,9 @@ vrs_t *vrs_create(){
 }
 
 void vrs_free(vrs_t *vrs){
+    xmlFree(vrs->name);
+    xmlFree(vrs->city);
+    xmlFree(vrs->street);
     free(vrs);
 }
 

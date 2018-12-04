@@ -1,5 +1,6 @@
 #include "movie.h"
 #include <stdio.h>
+#include <libxml/tree.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -12,6 +13,7 @@ movie_t *movie_create()
 
 void movie_free(movie_t *movie)
 {
+	xmlFree(movie->name);
 	free(movie);
 }
 
