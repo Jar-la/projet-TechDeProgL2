@@ -177,7 +177,7 @@ int menu(vrs_t vrs){
 
 			}else if(0==strcmp(op,"help\0")){
 				fprintf(stdout,"addr: Prints the VRS address\n");
-				fprintf(stdout,"help: Prints this help mv: Prints the VRS movies\n");
+				fprintf(stdout,"help: Prints this help\nmv: Prints the VRS movies\n");
 				fprintf(stdout,"mvn NAME: Prints the VRS movies containing the name NAME\n");
 				fprintf(stdout,"mvp PRICE: Prints the VRS movies with the renting price equal to PRICE \n");
 				fprintf(stdout,"mvpge PRICE: Prints the VRS movies with the renting price greater than or equal to PRICE\n");
