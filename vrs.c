@@ -23,7 +23,7 @@ void vrs_free(vrs_t *vrs){
     for (i=0; i<vrs->nmovies;i++){
         movie_free(vrs->movies[i]);
     }
-    free(&vrs->movies);
+    free(vrs->movies);
     free(vrs);
 }
 

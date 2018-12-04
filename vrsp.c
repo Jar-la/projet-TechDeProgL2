@@ -50,86 +50,63 @@ int main(int argc, char const *argv[])
 	/* Initialisation du nom du vidéo-club à partir du fichier xml */
 	vrs1->name = (char *) xmlGetProp(noeud, (const xmlChar *) "name");
 
-	noeud = noeud->xmlChildrenNode;
-	noeud = noeud->next;
+	noeud = noeud->children->next;
 
-	/* Initialisation de la rue du vidéo-club à partir du fichier xml */
-	vrs1->street =  (char *) xmlNodeListGetString(document, noeud->xmlChildrenNode, 1);
-
-	/* Passage de <street> à <postal_code> (/!\Les retours à la ligne sont des noeuds) */
-	noeud=noeud->next->next;
-
-	/* Initialisation du code postal du vidéo-club à partir du fichier xml */
-	temp=(char *) xmlNodeListGetString(document, noeud->xmlChildrenNode, 1);
-	vrs1->postal_code =  strtol(temp, NULL, 10);
-	free(temp);
-	noeud=noeud->next->next;
-
-	/* Initialisation de la ville du vidéo-club à partir du fichier xml */
-	vrs1->city =  (char *) xmlNodeListGetString(document, noeud->xmlChildrenNode, 1);
+	/*Récupère l'addresse du vidéo-club */
+	for (n=noeud; n != NULL; n=n->next){
+		if(n->type != 3){
+			if((xmlStrcmp(n->name, (const xmlChar*)"street"))==0)
+			{
+				vrs1->street =  (char *) xmlNodeListGetString(document, n->children, 1);
+			}else if((xmlStrcmp(n->name, (const xmlChar*)"postal-code"))==0){
+				temp = (char *) xmlNodeListGetString(document, n->children, 1);
+				vrs1->postal_code =  strtol(temp, NULL, 10);
+				free(temp);
+			}else if ((xmlStrcmp(n->name, (const xmlChar*)"city"))==0){
+				vrs1->city =  (char *) xmlNodeListGetString(document, n->children, 1);
+			}
+		}
+	}
 
 	/*Rentrer dans <movies> */
-	noeud = noeud->next->next->xmlChildrenNode->next;
-
-/* Parcourt <movies>, pour chaque <movie>, créé une structure movie_t et l'ajoute au vidéo-club */
-
-	for (n=noeud; n != NULL; n=n->next){
-
-		if(n->type != 3){
-
-			if((xmlStrcmp(noeud->name, (const xmlChar*)"book")))
-
-			{
-
-				movie = movie_create();
-
-				movie->name = (char *) xmlGetProp(n, (const xmlChar *) "name");
-
-				n2=n->children;
-
-				for (n2=n2; n2!= NULL; n2=n2->next)
-
-				{
-
-					if(n2->type != 3){
-
-						if((xmlStrcmp(n2->name, (const xmlChar*)"year"))==0){
-
-							temp = (char *) xmlNodeListGetString(document, n2->children,1);
-
-							movie->year = strtol(temp,NULL,10);
-
-							free(temp);
-
-						}else if((xmlStrcmp(n2->name, (const xmlChar*)"price"))==0){
-
-							temp = (char *) xmlNodeListGetString(document, n2->children,1);
-
-							movie->price = strtod(temp,NULL);
-
-							free(temp);
-
-						}
-
-					}
-
-				}
-
-				err=vrs_add_movie(vrs1, movie);
-
-				if (err==-1){
-
-					fprintf(stderr, "memory allocation is a failure\n");
-
-					return(1);
-
-				}
-
-			}
-
-		}
-
+	while (xmlStrcmp(noeud->name, (const xmlChar*)"movies")!=0){
+		noeud=noeud->next;
 	}
+	noeud=noeud->children;
+
+
+
+	/* Parcourt <movies>, pour chaque <movie>, créé une structure movie_t et l'ajoute au vidéo-club */
+	for (n=noeud; n != NULL; n=n->next){
+		if(n->type != 3){
+			if((xmlStrcmp(noeud->name, (const xmlChar*)"book")))
+			{
+				movie = movie_create();
+				movie->name = (char *) xmlGetProp(n, (const xmlChar *) "name");
+				n2=n->children;
+				for (n2=n2; n2!= NULL; n2=n2->next)
+				{
+					if(n2->type != 3){
+						if((xmlStrcmp(n2->name, (const xmlChar*)"year"))==0){
+							temp = (char *) xmlNodeListGetString(document, n2->children,1);
+							movie->year = strtol(temp,NULL,10);
+							free(temp);
+						}else if((xmlStrcmp(n2->name, (const xmlChar*)"price"))==0){
+							temp = (char *) xmlNodeListGetString(document, n2->children,1);
+							movie->price = strtod(temp,NULL);
+							free(temp);
+						}
+					}
+				}
+				err=vrs_add_movie(vrs1, movie);
+				if (err==-1){
+					fprintf(stderr, "memory allocation is a failure\n");
+					return(1);
+				}
+			}
+		}
+	}
+
 	if(menu(*vrs1)!=0){return 1;}
 	vrs_free(vrs1);
 	xmlCleanupParser();
