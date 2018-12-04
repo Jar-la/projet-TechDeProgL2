@@ -7,11 +7,11 @@ int menu(vrs_t vrs);
 int main(int argc, char const *argv[])
 {
 	xmlDocPtr document;
-	xmlNodePtr noeud,n,n2;
-	char* temp;
+	xmlNodePtr noeud,n ,n2;
 	vrs_t *vrs1;
 	movie_t * movie;
-	int err,i;
+	int err;
+	char* temp;
 	if(argc!=2){
 		fprintf(stderr,"./vrsp.out: Invalid number of arguments\n");
 		return 1;
@@ -60,8 +60,9 @@ int main(int argc, char const *argv[])
 	noeud=noeud->next->next;
 
 	/* Initialisation du code postal du vidéo-club à partir du fichier xml */
-	vrs1->postal_code =  strtol((char *) xmlNodeListGetString(document, noeud->xmlChildrenNode, 1), NULL, 10);
-
+	temp=(char *) xmlNodeListGetString(document, noeud->xmlChildrenNode, 1);
+	vrs1->postal_code =  strtol(temp, NULL, 10);
+	free(temp);
 	noeud=noeud->next->next;
 
 	/* Initialisation de la ville du vidéo-club à partir du fichier xml */
@@ -70,44 +71,69 @@ int main(int argc, char const *argv[])
 	/*Rentrer dans <movies> */
 	noeud = noeud->next->next->xmlChildrenNode->next;
 
-	/* Parcourt <movies>, pour chaque <movie>, créé une structure movie_t et l'ajoute au vidéo-club */
+/* Parcourt <movies>, pour chaque <movie>, créé une structure movie_t et l'ajoute au vidéo-club */
+
 	for (n=noeud; n != NULL; n=n->next){
+
 		if(n->type != 3){
+
 			if((xmlStrcmp(noeud->name, (const xmlChar*)"book")))
+
 			{
+
 				movie = movie_create();
+
 				movie->name = (char *) xmlGetProp(n, (const xmlChar *) "name");
+
 				n2=n->children;
+
 				for (n2=n2; n2!= NULL; n2=n2->next)
+
 				{
+
 					if(n2->type != 3){
+
 						if((xmlStrcmp(n2->name, (const xmlChar*)"year"))==0){
+
 							temp = (char *) xmlNodeListGetString(document, n2->children,1);
+
 							movie->year = strtol(temp,NULL,10);
+
 							free(temp);
+
 						}else if((xmlStrcmp(n2->name, (const xmlChar*)"price"))==0){
+
 							temp = (char *) xmlNodeListGetString(document, n2->children,1);
+
 							movie->price = strtod(temp,NULL);
+
 							free(temp);
+
 						}
+
 					}
+
 				}
+
 				err=vrs_add_movie(vrs1, movie);
+
 				if (err==-1){
+
 					fprintf(stderr, "memory allocation is a failure\n");
+
 					return(1);
+
 				}
+
 			}
+
 		}
+
 	}
-
-
 	if(menu(*vrs1)!=0){return 1;}
-	for (i = 0; i < vrs1->nmovies; ++i)
-	{
-		movie_free(vrs1->movies[i]);
-	}
 	vrs_free(vrs1);
+	xmlCleanupParser();
+	xmlFreeDoc(document);
 	return 0;
 }
 

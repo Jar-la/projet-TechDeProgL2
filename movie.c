@@ -1,8 +1,8 @@
 #include "movie.h"
 #include <stdio.h>
-#include <libxml/tree.h>
 #include <stdlib.h>
 #include <string.h>
+#include <libxml/tree.h>
 
 movie_t *movie_create()
 {

@@ -1,11 +1,10 @@
 #include "vrs.h"
-#include <libxml/tree.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <libxml/tree.h>
 
 int vrs_add_movie(vrs_t *vrs, movie_t *movie){
-    vrs->movies = realloc(vrs->movies, (vrs->nmovies+1)*sizeof(movie_t));
+    vrs->movies = realloc(vrs->movies, (vrs->nmovies+1)*sizeof(movie_t*));
     if (vrs->movies == NULL) return -1;
     vrs->movies[vrs->nmovies]=movie;
     vrs->nmovies++;
@@ -17,9 +16,14 @@ vrs_t *vrs_create(){
 }
 
 void vrs_free(vrs_t *vrs){
+    int i;
     xmlFree(vrs->name);
     xmlFree(vrs->city);
     xmlFree(vrs->street);
+    for (i=0; i<vrs->nmovies;i++){
+        movie_free(vrs->movies[i]);
+    }
+    free(&vrs->movies);
     free(vrs);
 }
 
