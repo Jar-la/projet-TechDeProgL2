@@ -3,6 +3,7 @@
 #include "vrs.h"
 #include "movie.h"
 int menu(vrs_t vrs);
+int authorisees(char *op);
 
 int main(int argc, char const *argv[])
 {
@@ -120,9 +121,9 @@ int menu(vrs_t vrs){
 	int j;
 	double price;
     int year;
-	char s[30];
-	char op[30];
-	char val[30];
+	char s[100];
+	char op[100];
+	char val[100];
 	char *ptr;
 	do{
 		/** (Ré)Initialisation des variables **/
@@ -130,22 +131,19 @@ int menu(vrs_t vrs){
 		j=0;
 		price=0.0;
 		year=0;
-
 		/** (Ré)Initialisation des strings **/
-		for(i=0;i<=30;i++){
+		for(i=0;i<=100;i++){
 			s[i] = '\0';
 			op[i] = '\0';
 			val[i] = '\0';
 		}
 		/** Affichage du prompt **/
 		fprintf(stdout,"VRSP> ");
-
 		/**On récupére s et on verifie de bien l'avoir reçu**/
-		if( fgets(s,29, stdin) == NULL){
+		if( fgets(s,99, stdin) == NULL){
 			fprintf(stderr,"Error: Failed to get user's imput");
 			return 1;
 		}
-
 		/** Si NULL alors la commande n'a pas d'espace et donc pas de parmettres .**/
 		if(strstr(s," ")==NULL){
 			/** Pas de paramettres alors on copie s dans op **/
@@ -173,23 +171,18 @@ int menu(vrs_t vrs){
 			/** Price et year respectivement float et int créés a partir de val**/
 			price = strtod(val , &ptr);
   			year = strtod(val , &ptr);
-
 		}
 
 		/** Si  la commande dépasse 18 char erreur et retour a la saisie sinon on continue **/
 		if(i>18){
 			fprintf(stderr,"./vrsp.out: Too many characters for the command\n");
-
 		}else{
 			/** L'opérateur est-il dans la liste des oprérations authorisées **/
-			if((NULL==strstr("addr help mv mvn mvp mvpge mvpgt mvple mvplt mvy mvyge mvygt mvyle mvylt version quit",op)) || (strcmp(op,"")==0) ){
+			if(authorisees(op)){
 				fprintf(stderr, "./vrsp.out: Invalid command \n");
-
-
 			}else if(0==strcmp(op,"addr")){
 				vrs_handle_addr(vrs);
-
-			}else if(0==strcmp(op,"help\0")){
+			}else if(0==strcmp(op,"help")){
 				fprintf(stdout,"addr: Prints the VRS address\n");
 				fprintf(stdout,"help: Prints this help\nmv: Prints the VRS movies\n");
 				fprintf(stdout,"mvn NAME: Prints the VRS movies containing the name NAME\n");
@@ -205,63 +198,51 @@ int menu(vrs_t vrs){
 				fprintf(stdout,"mvylt YEAR: Prints the VRS movies with the release year less than YEAR\n");
 				fprintf(stdout,"version: Prints the VRSP version\n");
 				fprintf(stdout, "quit: Quits VRSP\n");
-
-			}else if(0==strcmp(op,"mv\0")){
+			}else if(0==strcmp(op,"mv")){
 				vrs_handle_mv(vrs);
-
-			}else if(0==strcmp(op,"version\0")){
+			}else if(0==strcmp(op,"version")){
 				fprintf(stdout,"VRSP (Video Rental Shop Program) 20181201 \n\n");
 				fprintf(stdout,"Copyright (C) 2018 Edwin Vanootegem and Alexandre Lafon.\n\n");
 				fprintf(stdout,"Written by Edwin Vanootegem <edwin.vanootegem@etud.univ-pau.fr> and Alexandre Lafon <alexandre.lafon@etud.univ-pau.fr>.\n");
-
-			}else if(0==strcmp(op,"quit\0")){
+			}else if(0==strcmp(op,"quit")){
 				/** On ne fait rien **/
-
 			/**  Les commande suivantes on besion d'un paramettre alors on regarde si j a fait un parcourt  **/
 			}else if(j==0){
 				fprintf(stderr,"./vrsp.out: Missing parameter for the %s command\n",op);
-
-
-			}else if(0==strcmp(op,"mvn\0")){
+			}else if(0==strcmp(op,"mvn")){
 				vrs_handle_mvn(vrs, val);
-
-
 			/** ptr est une chaine contenant val privé de son nombre,
 			si ptr est val sont identiques alors val ne contenait pas de nombre **/
 			}else if(0==strcmp(val,ptr)){
 				fprintf(stderr,"./vrsp.out: Invalid parameter for the %s command\n",op);
-
-			}else if(0==strcmp(op,"mvp\0")){
+			}else if(0==strcmp(op,"mvp")){
 				vrs_handle_mvp(vrs,price);
-
-			}else if (0==strcmp(op,"mvpge\0")){
+			}else if (0==strcmp(op,"mvpge")){
 				vrs_handle_mvpge(vrs,price);
-
-			}else if (0==strcmp(op,"mvpgt\0")){
+			}else if (0==strcmp(op,"mvpgt")){
 				vrs_handlem_mvpgt(vrs,price);
-
-			}else if (0==strcmp(op,"mvple\0")){
+			}else if (0==strcmp(op,"mvple")){
 				vrs_handle_mvple(vrs,price);
-
-			}else if (0==strcmp(op,"mvplt\0")){
+			}else if (0==strcmp(op,"mvplt")){
 				vrs_handle_mvplt(vrs,price);
-
-			}else if (0==strcmp(op,"mvy\0")){
+			}else if (0==strcmp(op,"mvy")){
 				vrs_handle_mvy(vrs,year);
-
-			}else if (0==strcmp(op,"mvyge\0")){
+			}else if (0==strcmp(op,"mvyge")){
 				vrs_handle_mvyge(vrs,year);
-
-			}else if (0==strcmp(op,"mvygt\0")){
+			}else if (0==strcmp(op,"mvygt")){
 				vrs_handle_mvygt(vrs,year);
-
-			}else if (0==strcmp(op,"mvyle\0")){
+			}else if (0==strcmp(op,"mvyle")){
 				vrs_handle_mvyle(vrs,year);
-
-			}else if (0==strcmp(op,"mvylt\0")){
+			}else if (0==strcmp(op,"mvylt")){
 				vrs_handle_mvylt(vrs,year);
 			}
 		}
 	}while(!(0==strcmp(op,"quit\0")));
 	return 0;
+}
+int authorisees(char *op){
+	if( (0==strcmp(op,"addr")) || (0==strcmp(op,"help")) || (0==strcmp(op,"mv")) || (0==strcmp(op,"version")) || (0==strcmp(op,"quit")) || (0==strcmp(op,"mvn")) || (0==strcmp(op,"mvp")) || (0==strcmp(op,"mvpge")) || (0==strcmp(op,"mvpgt")) || (0==strcmp(op,"mvple")) || (0==strcmp(op,"mvplt")) || (0==strcmp(op,"mvy")) || (0==strcmp(op,"mvyge")) || (0==strcmp(op,"mvygt")) || (0==strcmp(op,"mvyle")) || (0==strcmp(op,"mvylt"))){
+		return 0;
+	}
+	return -1;
 }
